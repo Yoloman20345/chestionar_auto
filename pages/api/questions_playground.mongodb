@@ -1,0 +1,33 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('test');
+
+// Select the collection to use.
+var question = db.getCollection('questions');
+// The drop() command destroys all data from a collection.
+// Make sure you run it against the correct database and collection.
+question.insertMany([
+  {    "question": "Ce indica semnalul agentului de circulatie?",
+    "answers": [ 
+             { "text": "reduceti viteza" },   
+                { "text": "oprire" },   
+                   { "text": "mariti viteza" },   
+                        ],
+    "correct": ["oprire"],
+    "questionId": 20,
+    "image": "https://www.scoalarutiera.ro/upload/img/questions/img/Cat_B_poz_1175.jpg"
+  },
+{    "question": "În care dintre situaţiile de mai jos este interzisă întoarcerea?",
+    "answers": [ 
+             { "text": "în curbele cu vizibilitatea redusă sub 50 m" },   
+                { "text": "la întâlnirea indicatorului „Drum cu prioritate" },   
+                   { "text": "la întâlnirea indicatorului „Drum îngustat“" },   
+                        ],
+    "correct": ["în curbele cu vizibilitatea redusă sub 50 m","la întâlnirea indicatorului „Drum îngustat"],
+    "questionId": 21,
+  },
+])
