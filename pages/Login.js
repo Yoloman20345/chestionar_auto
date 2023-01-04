@@ -3,13 +3,27 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import Alerta from "./Alerta";
+import Error_user from "./Error_user";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      setAlert(true);
+      return;
+    } else {
+      setAlert(false);
+    }
 
     // Send a POST request to the /api/login endpoint with the email and password
     axios
@@ -25,9 +39,14 @@ const Login = () => {
         setError(error.response.data);
       });
   };
-
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+    setEmailError(!emailRegex.test(event.target.value));
+  };
   return (
     <form onSubmit={handleSubmit}>
+      {error && <Error_user props={error}></Error_user>}
+      {alert && <Alerta></Alerta>}
       <TextField
         sx={{
           width: "25ch",
@@ -38,11 +57,13 @@ const Login = () => {
         }}
         type="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleEmailChange}
         htmlFor="email"
         id="email"
         label="Email"
         variant="outlined"
+        error={emailError}
+        helperText={emailError ? "Please enter a valid email" : ""}
       />
       <br />
       <TextField
@@ -90,7 +111,6 @@ const Login = () => {
       >
         Login
       </Button>
-      {error && <p>{error}</p>}
     </form>
   );
 };

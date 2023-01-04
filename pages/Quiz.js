@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Failed from "./Failed";
+import Success from "./Success";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -39,7 +41,7 @@ export default function Quiz() {
   const [failed, setFailed] = useState(false);
   const [success, setSuccess] = useState(false);
   function func() {
-    random = pickRandomNumbers(0, questions.length - 1, 5);
+    random = pickRandomNumbers(0, questions.length - 1, 26);
   }
   useEffect(() => {
     const fetchData = async () => {
@@ -90,11 +92,10 @@ export default function Quiz() {
       }
     });
     setNrq(nrq + 1);
-    if (corecte + gresite === 5) {
-      //alert("Ai terminat testul");
+    if (corecte + gresite === 26) {
       setSuccess(true);
     }
-    if (gresite === 3) {
+    if (gresite === 4) {
       setFailed(true);
     }
   };
@@ -106,77 +107,86 @@ export default function Quiz() {
     setIsSubmitDisabled(!isAtLeastOneChecked);
   };
   if (random.length === 0) func();
-  return (
-    <form onSubmit={handleSubmit}>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <Item>Intreabari corecte {corecte}</Item>
+  if (failed) {
+    return <Failed></Failed>;
+  } else if (success) {
+    return <Success prop={corecte}></Success>;
+  } else {
+    return (
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <Item>Intreabari corecte {corecte}</Item>
+            </Grid>
+            <Grid item xs={8}>
+              <Item>Intrebari gresite {gresite}</Item>
+            </Grid>
           </Grid>
-          <Grid item xs={8}>
-            <Item>Intrebari gresite {gresite}</Item>
-          </Grid>
-        </Grid>
-      </Box>
-      {questions.slice(random[nrq], random[nrq] + 1).map((question, index) => {
-        console.log(random);
-        console.log(index);
-        return (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-              padding: "20px",
-              border: "1px solid black",
-              borderRadius: "10px",
-              backgroundColor: "white",
-              boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
-              width: "100%",
-              maxWidth: "600px",
-              height: "auto",
-              minHeight: "200px",
-              maxHeight: "500px",
-              overflow: "auto",
-            }}
-            key={question.questionId}
-          >
-            <h3
-              style={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                marginBottom: "20px",
-              }}
-            >
-              {question.question}
-            </h3>
-            {question.answers.map((answer) => (
-              <div key={answer.text}>
-                <label>
-                  <input
-                    onChange={handleChange}
-                    type="checkbox"
-                    name={answer.text}
-                    value={answer.text}
-                  />
-                  {answer.text}
-                </label>
+        </Box>
+        {questions
+          .slice(random[nrq], random[nrq] + 1)
+          .map((question, index) => {
+            console.log(random);
+            console.log(index);
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  padding: "20px",
+                  border: "1px solid black",
+                  borderRadius: "10px",
+                  backgroundColor: "white",
+                  boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
+                  width: "100%",
+                  maxWidth: "600px",
+                  height: "auto",
+                  minHeight: "200px",
+                  maxHeight: "500px",
+                  overflow: "auto",
+                }}
+                key={question.questionId}
+              >
+                <h3
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "20px",
+                  }}
+                >
+                  {question.question}
+                </h3>
+                <img src={question.image}></img>
+                {question.answers.map((answer) => (
+                  <div key={answer.text}>
+                    <label>
+                      <input
+                        onChange={handleChange}
+                        type="checkbox"
+                        name={answer.text}
+                        value={answer.text}
+                      />
+                      {answer.text}
+                    </label>
+                  </div>
+                ))}
+                <Button
+                  sx={{ zIndex: 4, top: "20px" }}
+                  disabled={isSubmitDisabled}
+                  type="submit"
+                  variant="contained"
+                >
+                  Submit
+                </Button>
               </div>
-            ))}
-          </div>
-        );
-      })}
-      <Button
-        sx={{ left: "300px", zIndex: 4, bottom: "65px" }}
-        disabled={isSubmitDisabled}
-        type="submit"
-        variant="contained"
-      >
-        Submit
-      </Button>
-    </form>
-  );
+            );
+          })}
+      </form>
+    );
+  }
 }
