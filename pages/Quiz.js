@@ -34,6 +34,7 @@ function pickRandomNumbers(min, max, count) {
 }
 export default function Quiz() {
   const [questions, setQuestions] = useState([]);
+  const [time, setTime] = useState(1800);
   const [corecte, setCorecte] = useState(0);
   const [gresite, setGresite] = useState(0);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
@@ -49,6 +50,17 @@ export default function Quiz() {
       setQuestions(res.data);
     };
     fetchData();
+  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((time) => {
+        if (time === 0) {
+          clearInterval(interval);
+          window.location.href = "/Failed";
+        }
+        return time - 1;
+      });
+    }, 1500);
   }, []);
 
   const handleSubmit = (event) => {
@@ -124,6 +136,9 @@ export default function Quiz() {
             </Grid>
           </Grid>
         </Box>
+
+        <div>Time: {Math.floor(time / 60) + ":" + (time % 60)}</div>
+        <div>Sunteti la intrebarea {nrq + 1} / 26</div>
         {questions
           .slice(random[nrq], random[nrq] + 1)
           .map((question, index) => {
